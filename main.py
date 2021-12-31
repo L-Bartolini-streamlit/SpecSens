@@ -1,11 +1,7 @@
 import streamlit as st 
-import numpy as np 
-import matplotlib.pyplot as plt 
-from matplotlib.patches import Rectangle
 import requests
 from PIL import Image 
-from matplotlib.offsetbox import (TextArea, DrawingArea, OffsetImage,
-                                  AnnotationBbox)
+import plotly.graph_objects as go
 
 st.title("Specificity and Sensitivity")
 
@@ -84,43 +80,6 @@ h_FN = height - h_TP
 h_FP = round(FP/healthy_width)
 h_TN = height - h_FP
 
-def figMatplotlib():
-    #create PATCHES
-    fig, ax = plt.subplots(facecolor = "#0E1117")
-
-    ax.add_patch(Rectangle((0, 0), diseased_width, -h_TP, fc ='red', ec = 'k', lw=1))
-    ax.add_patch(Rectangle((0, -h_TP), diseased_width, -h_FN, fc ='darkorange', ec = 'k', lw=1))
-    ax.add_patch(Rectangle((diseased_width, 0 ), healthy_width, -h_FP, fc ='royalblue', ec = 'k', lw=1))
-    ax.add_patch(Rectangle((diseased_width, -h_FP), healthy_width, -h_TN, fc ='forestgreen', ec = 'k', lw=1))
-
-    ax.set_xlim([-5,width+5])
-    ax.set_ylim([-height-5,5])
-    ax.axis('off')
-
-    def inRange(w,h):
-        if h>-60: 
-            h = -60
-        elif h>680:
-            h = 680
-        if w > 950:
-            w = 950
-        elif w<65:
-            w = 65
-        return (w, h)
-
-    ax.text(*inRange(diseased_width//2, -h_TP//2-27), "True\nPositive", ha = 'center')
-    ax.text(*inRange(diseased_width//2, -h_TP - h_FN//2-27), "False\nPositive", ha = 'center')
-
-    ax.text(*inRange(diseased_width + healthy_width//2, -h_FP//2-27), "False\nPositive", ha = 'center')
-    ax.text(*inRange(diseased_width + healthy_width//2, -h_FP - h_TN//2 -27), "True\nNegative", ha = 'center')
-
-    virus_icon_url = r"https://www.safeguardingchildren.co.uk/wp-content/uploads/2020/03/virus.png"
-    virus = Image.open(requests.get(virus_icon_url, stream=True).raw)
-
-    return fig
-# st.pyplot(figMatplotlib())
-
-import plotly.graph_objects as go
 fig = go.Figure()
 
 rectangles = {
